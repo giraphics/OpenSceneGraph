@@ -3,6 +3,7 @@ project(qtosg-hello)
 
 #set(Qt5_DIR "*PATH TO YOUR QT QT5CONFIG FILE HERE*" CACHE PATH "Initial cahe" FORCE)
 set(Qt5_DIR "/home/parminder/Qt5.12.7/5.12.7/gcc_64/lib/cmake/Qt5" CACHE PATH "Initial cahe" FORCE)
+set(CMAKE_BUILD_TYPE "Debug")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -24,3 +25,6 @@ target_link_libraries(${PROJECT_NAME}
     Qt5::Gui
     Qt5::OpenGL
     )
+
+# Allow the project to run with OSG or predefine Cylinder geometry shape
+add_definitions(-DUSE_OSG=1)

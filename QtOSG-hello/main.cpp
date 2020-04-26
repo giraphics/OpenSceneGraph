@@ -38,7 +38,7 @@
 #include <osg/Material>
 #include <osgGA/EventQueue>
 #include <osgGA/TrackballManipulator>
-
+#include <osgDB/ReadFile>
 
 class QtOSGWidget : public QOpenGLWidget
 {
@@ -51,27 +51,38 @@ public:
       // take care of HDPI screen, e.g. Retina display on Mac
       , m_scale(QApplication::desktop()->devicePixelRatio())
       {
-        osg::Cylinder* cylinder    = new osg::Cylinder( osg::Vec3( 0.f, 0.f, 0.f ), 0.25f, 0.5f );
-        osg::ShapeDrawable* sd = new osg::ShapeDrawable( cylinder );
-        sd->setColor( osg::Vec4( 0.8f, 0.5f, 0.2f, 1.f ) );
-        osg::Geode* geode = new osg::Geode;
-        geode->addDrawable(sd);
+          osg::Camera* camera = new osg::Camera;
+          camera->setViewport( 0, 0, this->width(), this->height() );
+          camera->setClearColor( osg::Vec4( 0.9f, 0.9f, 1.f, 1.f ) );
+          float aspectRatio = static_cast<float>( this->width()) / static_cast<float>( this->height() );
+          camera->setProjectionMatrixAsPerspective( 30.f, aspectRatio, 1.f, 1000.f );
+          camera->setGraphicsContext( _mGraphicsWindow );
 
-        osg::Camera* camera = new osg::Camera;
-        camera->setViewport( 0, 0, this->width(), this->height() );
-        camera->setClearColor( osg::Vec4( 0.9f, 0.9f, 1.f, 1.f ) );
-        float aspectRatio = static_cast<float>( this->width()) / static_cast<float>( this->height() );
-        camera->setProjectionMatrixAsPerspective( 30.f, aspectRatio, 1.f, 1000.f );
-        camera->setGraphicsContext( _mGraphicsWindow );
+          _mViewer->setCamera(camera);
 
-        _mViewer->setCamera(camera);
-        _mViewer->setSceneData(geode);
-        osgGA::TrackballManipulator* manipulator = new osgGA::TrackballManipulator;
-        manipulator->setAllowThrow( false );
-        this->setMouseTracking(true);
-        _mViewer->setCameraManipulator(manipulator);
-        _mViewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
-        _mViewer->realize();
+#if USE_OSG == 1
+          std::vector<std::string> fileList;
+          fileList.push_back("/home/parminder/Parminder/OpenSceneGraph/OSGGiraphics/OpenSceneGraph/QtOSG-hello/cessna.osg");
+          osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(fileList);
+
+          _mViewer->setSceneData(loadedModel);
+#else
+          osg::Cylinder* cylinder    = new osg::Cylinder( osg::Vec3( 0.f, 0.f, 0.f ), 0.25f, 0.5f );
+          osg::ShapeDrawable* sd = new osg::ShapeDrawable( cylinder );
+          sd->setColor( osg::Vec4( 0.8f, 0.5f, 0.2f, 1.f ) );
+          osg::Geode* geode = new osg::Geode;
+          geode->addDrawable(sd);
+
+          _mViewer->setSceneData(geode);
+#endif
+
+          osgGA::TrackballManipulator* manipulator = new osgGA::TrackballManipulator;
+          manipulator->setAllowThrow( false );
+          this->setMouseTracking(true);
+          _mViewer->setCameraManipulator(manipulator);
+          _mViewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
+          _mViewer->realize();
+
       }
 
 
@@ -91,8 +102,9 @@ protected:
       camera->setViewport(0, 0, this->width()*m_scale, this->height()* m_scale);
   }
 
-  virtual void initializeGL(){
-      osg::Geode* geode = dynamic_cast<osg::Geode*>(_mViewer->getSceneData());
+  virtual void initializeGL()
+  {
+      osg::Node* geode = _mViewer->getSceneData();
       osg::StateSet* stateSet = geode->getOrCreateStateSet();
       osg::Material* material = new osg::Material;
       material->setColorMode( osg::Material::AMBIENT_AND_DIFFUSE );
