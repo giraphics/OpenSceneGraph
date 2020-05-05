@@ -2,7 +2,13 @@ cmake_minimum_required(VERSION 3.7.1)
 project(qtosg-hello)
 
 #set(Qt5_DIR "*PATH TO YOUR QT QT5CONFIG FILE HERE*" CACHE PATH "Initial cahe" FORCE)
-set(Qt5_DIR "/home/parminder/Qt5.12.7/5.12.7/gcc_64/lib/cmake/Qt5" CACHE PATH "Initial cahe" FORCE)
+# Linux Nitro Qt path
+#set(Qt5_DIR "/home/parminder/Qt5.12.7/5.12.7/gcc_64/lib/cmake/Qt5" CACHE PATH "Initial cahe" FORCE)
+
+# Linux Thinkpad Qt path
+set(Qt5_DIR "/home/parminder/Qt5.14.2/5.14.2/gcc_64/lib/cmake/Qt5" CACHE PATH "Initial cahe" FORCE)
+
+
 set(CMAKE_BUILD_TYPE "Debug")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)

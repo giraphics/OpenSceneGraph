@@ -62,7 +62,8 @@ public:
 
 #if USE_OSG == 1
           std::vector<std::string> fileList;
-          fileList.push_back("/home/parminder/Parminder/OpenSceneGraph/OSGGiraphics/OpenSceneGraph/QtOSG-hello/cessna.osg");
+          //fileList.push_back("/home/parminder/Parminder/OpenSceneGraph/OSGGiraphics/OpenSceneGraph/QtOSG-hello/cessna.osg");
+          fileList.push_back("/home/parminder/Dev/Giraphics/OpenSceneGraph/QtOSG-hello/cessna.osg");
           osg::ref_ptr<osg::Node> loadedModel = osgDB::readRefNodeFiles(fileList);
 
           _mViewer->setSceneData(loadedModel);
